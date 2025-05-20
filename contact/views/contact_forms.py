@@ -1,23 +1,23 @@
-from django.shortcuts import render, get_object_or_404, redirect
+from django.shortcuts import render, redirect
+from django.urls import reverse
 from contact.admin import *
-from contact.models import Contact
-from django.http import Http404
-from django.db.models import Q
-from django.core.paginator import Paginator
-from django import forms
-from django.core.exceptions import ValidationError
 from contact.forms import *
 
 
 def create(request):
+    form_action = reverse('contact:create')
+
     if request.method == 'POST':
             form = ContactForms(request.POST)
             context = {
-                'form':form
+                'form':form,
+                'form_action':form_action
             }
 
             if form.is_valid():
-                  ...
+                contact = form.save()
+                return redirect('contact:update', Contact_id=contact.id)
+
 
             return render(
                 request,
@@ -26,9 +26,40 @@ def create(request):
             )  
 
     context = {
-        'form':ContactForms()
-        }
+        'form':ContactForms(),
+        'form_action':form_action
+    }
+    return render(
+        request,
+        'contact/create.html',
+        context
+    )  
 
+def update(request, contact_id):
+    form_action = reverse('contact:update', args=(contact_id,))
+
+    if request.method == 'POST':
+            form = ContactForms(request.POST)
+            context = {
+                'form':form,
+                'form_action':form_action
+            }
+
+            if form.is_valid():
+                contact = form.save()
+                return redirect('contact:update', Contact_id=contact.id)
+
+
+            return render(
+                request,
+                'contact/create.html',
+                context
+            )  
+
+    context = {
+        'form':ContactForms(),
+        'form_action':form_action
+    }
     return render(
         request,
         'contact/create.html',

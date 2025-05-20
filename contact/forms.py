@@ -56,6 +56,9 @@ class ContactForms(forms.ModelForm):
         label='Descrição',
     )
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args,**kwargs)
+
     class Meta:
         model = models.Contact
         fields = (
