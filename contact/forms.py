@@ -15,7 +15,6 @@ class ContactForms(forms.ModelForm):
             }
         ),
         label='Primeiro nome',
-        help_text='Troque o seu sobrenome',
     )
 
     last_name = forms.CharField(
@@ -66,24 +65,32 @@ class ContactForms(forms.ModelForm):
         cleaned_data = self.cleaned_data
         first_name = cleaned_data.get('first_name')
         last_name = cleaned_data.get('last_name')
+        phone = cleaned_data.get('phone') 
 
         if first_name == last_name:
             msg = ValidationError(
-                'Seu nome não poded ser igual a o seu sobrenome',
+                'Seu nome não pode ser igual ao seu sobrenome.',
                 code='invalid'
             )
             self.add_error('last_name', msg)
 
-    # def clean_last_name(self):
-    #     last_name = self.cleaned_data.get('last_name')
+        if first_name and len(first_name) < 2:
+            msg = ValidationError(
+                'Nome deve ter pelo menos 2 caracteres.',
+                code='invalid'
+            )
+            self.add_error('first_name', msg)
 
-    #     if last_name == 'first_name':
-    #         self.add_error(
-    #             'first_name',
-    #             ValidationError(
-    #                 'Seu primeiro nome não pode ser igual a o segundo.',
-    #                 code='Invalid'
-    #             )
-    #         )
-            
-    #     return last_name
+        for x in phone:
+            if not x.isdigit():
+                msg = ValidationError(
+                    'Número de telefone inválido.',
+                    code='invalid'
+                )
+                self.add_error('phone', msg)
+
+
+
+        
+
+
