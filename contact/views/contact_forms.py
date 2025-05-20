@@ -5,19 +5,19 @@ from django.http import Http404
 from django.db.models import Q
 from django.core.paginator import Paginator
 from django import forms
+from django.core.exceptions import ValidationError
+from contact.forms import *
 
-class ContactForms(forms.ModelForm):
-    class Meta:
-        model = Contact
-        fields = (
-            'first_name','last_name','phone',
-        )
 
 def create(request):
     if request.method == 'POST':
+            form = ContactForms(request.POST)
             context = {
-                'form':ContactForms(request.POST)
-                }
+                'form':form
+            }
+
+            if form.is_valid():
+                  ...
 
             return render(
                 request,
